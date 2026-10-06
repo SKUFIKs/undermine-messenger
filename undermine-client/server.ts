@@ -388,9 +388,11 @@ async function startServer() {
   const isProd = process.env.NODE_ENV === 'production';
 
   if (!isProd) {
+    const rootDir = path.resolve(__dirname).replace(/\\/g, '/');
     const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
-      root: __dirname,
+      root: rootDir,
+      configFile: path.resolve(rootDir, 'vite.config.ts').replace(/\\/g, '/'),
       server: {
         middlewareMode: true,
         host: '0.0.0.0',
