@@ -1,0 +1,8 @@
+{
+  "name": "UnderMine Messenger",
+  "description": "Zero-Knowledge Relay & E2EE cryptographic messenger with real-time WebSocket communication and Curve25519 / ChaCha20-Poly1305 encryption.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -42,7 +42,7 @@ func (h *AuthHandler) HandleRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var req RegisterRequest // <-- Исправлено с AuthRequest на RegisterRequest
+	var req RegisterRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Некорректный JSON", http.StatusBadRequest)
 		return
@@ -55,7 +55,7 @@ func (h *AuthHandler) HandleRegister(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var pubKey [32]byte
-	copy(pubKey[:], pubKeyBytes) // <-- Объявлен и скопирован pubKey
+	copy(pubKey[:], pubKeyBytes)
 
 	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
 	deviceInfo := r.UserAgent()
@@ -92,12 +92,11 @@ func (h *AuthHandler) HandleLogin(w http.ResponseWriter, r *http.Request) {
 
 	token, user, err := h.authService.Login(req.Username, req.Password, ip, deviceInfo)
 	if err != nil {
-		// Проверяем, заблокирован ли IP
 		if strings.Contains(err.Error(), "IP заблокирован") {
-			http.Error(w, err.Error(), http.StatusTooManyRequests) // 429
+			http.Error(w, err.Error(), http.StatusTooManyRequests)
 			return
 		}
-		http.Error(w, err.Error(), http.StatusUnauthorized) // 401
+		http.Error(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
@@ -153,10 +152,6 @@ func (h *AuthHandler) HandleSearchUser(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-type UpdateKeyRequest struct {
-	PublicKey string `json:"public_key"`
-}
-
 func (h *AuthHandler) HandleUpdateKey(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
@@ -175,7 +170,9 @@ func (h *AuthHandler) HandleUpdateKey(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var req UpdateKeyRequest
+	var req struct {
+		PublicKey string `json:"public_key"`
+	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Некорректный JSON", http.StatusBadRequest)
 		return

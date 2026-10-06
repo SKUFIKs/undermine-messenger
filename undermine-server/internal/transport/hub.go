@@ -11,7 +11,6 @@ import (
 type Hub struct {
 	mu      sync.RWMutex
 	clients map[[16]byte]*Client
-
 	storage *storage.SQLiteStorage
 }
 
@@ -35,9 +34,7 @@ func (h *Hub) Unregister(userID [16]byte) {
 }
 
 func (h *Hub) RouteMessage(sender *Client, rawData []byte) {
-
 	packet, err := protocol.DecodeMessagePacket(rawData)
-
 	if err != nil {
 		log.Printf("[Hub] Ошибка декодирования пакета: %v", err)
 		return
@@ -47,26 +44,21 @@ func (h *Hub) RouteMessage(sender *Client, rawData []byte) {
 		packet.MessageID, sender.userID, packet.RecipientID)
 
 	h.mu.RLock()
-
 	recipient, ok := h.clients[packet.RecipientID]
-
 	h.mu.RUnlock()
 
 	var ackStatus byte
 
-	if ok == true && recipient != nil {
-		log.Printf("[Hub] Получатель онлайн, отправка в канал")
+	if ok && recipient != nil {
 		select {
 		case recipient.SendChannel <- rawData:
 			ackStatus = 0x02
-			log.Printf("[Hub] Сообщение отправлено получателю")
-
+			log.Printf("[Hub] Сообщение отправлено получателю онлайн")
 		default:
-			log.Printf("[Hub] Канал получателя заполнен, сохранение в офлайн-очередь")
+			log.Printf("[Hub] Канал получателя полон, сохранение в офлайн-очередь")
 			_ = h.storage.SavePendingMessage(packet.MessageID, packet.RecipientID, rawData)
 			ackStatus = 0x01
 		}
-
 	} else {
 		log.Printf("[Hub] Получатель офлайн, сохранение в офлайн-очередь")
 		_ = h.storage.SavePendingMessage(packet.MessageID, packet.RecipientID, rawData)
@@ -80,7 +72,5 @@ func (h *Hub) RouteMessage(sender *Client, rawData []byte) {
 	}
 
 	ackBytes := protocol.EncodeAckPacket(&ackPacket)
-
 	sender.SendChannel <- ackBytes
-
 }

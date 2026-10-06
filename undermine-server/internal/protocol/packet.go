@@ -7,27 +7,27 @@ import (
 type PacketType byte
 
 const (
-	PacketTypeMessage    PacketType = 0x01 // Обычное зашифрованное сообщение
-	PacketTypeMessageAck PacketType = 0x02 // Подтверждение доставки (ACK)
-	PacketTypePing       PacketType = 0x03 // Heartbeat Ping
-	PacketTypePong       PacketType = 0x04 // Heartbeat Pong
+	PacketTypeMessage    PacketType = 0x01
+	PacketTypeMessageAck PacketType = 0x02
+	PacketTypePing       PacketType = 0x03
+	PacketTypePong       PacketType = 0x04
 )
 
 const minMessagePacketSize = 45
 const ackPacketSize = 18
 
 type MessagePacket struct {
-	Type        PacketType // тип пакета (Сообщение, Ack, Ping, Pong)
-	MessageID   [16]byte   // id полученного сообщения
-	RecipientID [16]byte   // 16 байт (Кому доставить)
-	Nonce       [12]byte   // 12 байт (Криптографический вектор для ChaCha20)
-	Payload     []byte     // N байт (Шифротекст + Poly1305 MAC тег)
+	Type        PacketType
+	MessageID   [16]byte
+	RecipientID [16]byte
+	Nonce       [12]byte
+	Payload     []byte
 }
 
 type AckPacket struct {
-	Type      PacketType // 1 байт (0x02)
-	MessageID [16]byte   // 16 байт (Какое сообщение подтверждаем)
-	Status    byte       // 1 байт (1 = Сохранено в офлайн на сервере, 2 = Доставлено в сокет получателя)
+	Type      PacketType
+	MessageID [16]byte
+	Status    byte
 }
 
 func DecodeMessagePacket(data []byte) (*MessagePacket, error) {
@@ -36,7 +36,6 @@ func DecodeMessagePacket(data []byte) (*MessagePacket, error) {
 	}
 
 	var packet MessagePacket
-
 	packet.Type = PacketType(data[0])
 	copy(packet.MessageID[:], data[1:17])
 	copy(packet.RecipientID[:], data[17:33])

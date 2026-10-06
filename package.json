@@ -1,0 +1,39 @@
+{
+  "name": "undermine-messenger",
+  "version": "1.0.0",
+  "description": "UnderMine - Zero-Knowledge Relay & E2EE Cryptographic Messenger",
+  "type": "module",
+  "workspaces": [
+    "undermine-client"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=undermine-client",
+    "lint": "npm run lint --workspace=undermine-client",
+    "build": "npm run build --workspace=undermine-client",
+    "start": "npm run dev --workspace=undermine-client"
+  },
+  "dependencies": {
+    "@noble/ciphers": "^1.2.1",
+    "@noble/curves": "^1.8.1",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "lucide-react": "^1.16.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.1",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/ws": "^8.5.13",
+    "@vitejs/plugin-react": "^4.3.4",
+    "tailwindcss": "^4.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.1"
+  }
+}

@@ -47,14 +47,6 @@ undermine-server/
 
 ---
 
-## Механизмы защиты
-
-- **Timing Attack Shield** — при несуществующем логине вычисляется фиктивный bcrypt-хэш
-- **Rate Limiting** — экспоненциальная блокировка IP после 5 неудачных попыток
-- **Изоляция токенов** — в БД хранится только SHA-256 хэш токена
-
----
-
 ## REST API
 
 Базовый URL: `http://localhost:8080`
@@ -138,13 +130,6 @@ URL: `ws://localhost:8080/ws?token=<token>`
 
 ## Запуск
 
-### Предварительные требования
-
-- Go 1.21+
-- GCC/MinGW для CGO (SQLite)
-
-### Сборка и запуск
-
 ```bash
 # Сборка
 go build -o server ./cmd/server/main.go
@@ -154,9 +139,3 @@ go build -o server ./cmd/server/main.go
 ```
 
 Сервер запустится на `0.0.0.0:8080`.
-
----
-
-## Клиент
-
-Десктопный клиент находится в репозитории `undermine-messenger`.

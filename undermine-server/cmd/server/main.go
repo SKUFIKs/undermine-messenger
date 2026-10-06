@@ -81,10 +81,10 @@ func main() {
 	})
 
 	log.Println("--------------------------------------------------")
-	log.Println("The server is running on 0.0.0.0:8080")
-	log.Println("Auth routes registered: /api/v1/auth/register, /api/v1/auth/login")
-	log.Println("User search route registered: /api/v1/users/search")
-	log.Println("WebSocket endpoint initialized: /ws")
+	log.Println("UnderMine Go Server running on 0.0.0.0:8080")
+	log.Println("Auth routes: /api/v1/auth/register, /api/v1/auth/login")
+	log.Println("User search route: /api/v1/users/search")
+	log.Println("WebSocket endpoint: /ws")
 	log.Println("--------------------------------------------------")
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
