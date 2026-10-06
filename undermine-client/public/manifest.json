@@ -1,0 +1,17 @@
+{
+  "name": "UnderMine Messenger",
+  "short_name": "UnderMine",
+  "description": "Zero-Knowledge Relay & E2EE Cryptographic Messenger",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#171717",
+  "theme_color": "#222222",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
