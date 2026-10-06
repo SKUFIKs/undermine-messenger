@@ -10,6 +10,8 @@
     "dev": "npm run dev --workspace=undermine-client",
     "lint": "npm run lint --workspace=undermine-client",
     "build": "npm run build --workspace=undermine-client",
+    "build:exe": "npm run build:exe --workspace=undermine-client",
+    "electron": "npm run electron --workspace=undermine-client",
     "start": "npm run dev --workspace=undermine-client"
   },
   "dependencies": {

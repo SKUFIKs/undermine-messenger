@@ -9,7 +9,23 @@
     "lint": "tsc --noEmit",
     "build": "vite build",
     "preview": "vite preview",
-    "electron": "electron electron-main.cjs"
+    "electron": "electron electron-main.cjs",
+    "build:exe": "vite build && electron-builder --win portable"
+  },
+  "build": {
+    "appId": "com.undermine.messenger",
+    "productName": "UnderMine",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron-main.cjs",
+      "package.json"
+    ],
+    "win": {
+      "target": ["portable", "nsis"]
+    }
   },
   "dependencies": {
     "@noble/ciphers": "^1.2.1",
