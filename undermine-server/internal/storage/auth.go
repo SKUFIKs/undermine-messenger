@@ -137,3 +137,37 @@ func (s *SQLiteStorage) GetPendingMessages(recipientID [16]byte, limit int) ([][
 func HashToken(token string) [32]byte {
 	return sha256.Sum256([]byte(token))
 }
+
+// DirectoryEntry is a user with public key for the contacts directory
+type DirectoryEntry struct {
+	UserID    [16]byte
+	Username  string
+	PublicKey [32]byte
+}
+
+func (s *SQLiteStorage) ListUsersWithKeys() ([]DirectoryEntry, error) {
+	rows, err := s.db.Query(`
+		SELECT u.id, u.username, k.public_key
+		FROM users u
+		JOIN user_keys k ON k.user_id = u.id`)
+	if err != nil {
+		return nil, fmt.Errorf("ошибка получения списка пользователей: %w", err)
+	}
+	defer rows.Close()
+
+	var result []DirectoryEntry
+	for rows.Next() {
+		var entry DirectoryEntry
+		var idBytes, pubKeyBytes []byte
+		if err := rows.Scan(&idBytes, &entry.Username, &pubKeyBytes); err != nil {
+			return nil, fmt.Errorf("ошибка чтения пользователя: %w", err)
+		}
+		if len(idBytes) != 16 || len(pubKeyBytes) != 32 {
+			continue
+		}
+		copy(entry.UserID[:], idBytes)
+		copy(entry.PublicKey[:], pubKeyBytes)
+		result = append(result, entry)
+	}
+	return result, rows.Err()
+}

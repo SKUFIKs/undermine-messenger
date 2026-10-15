@@ -5,12 +5,17 @@ import { WebSocketServer, WebSocket } from 'ws';
 import crypto from 'crypto';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Load configuration: server/.env first (PORT, HOST), then root .env as fallback
+dotenv.config({ path: path.join(__dirname, 'server', '.env') });
+dotenv.config();
+
 const PORT = parseInt(process.env.PORT || '3000', 10);
-const HOST = '0.0.0.0';
+const HOST = process.env.HOST || '0.0.0.0';
 
 // In-Memory Database for Zero-Knowledge Relay backend
 interface UserRecord {
@@ -51,48 +56,7 @@ function generateToken(): string {
   return crypto.randomBytes(32).toString('hex');
 }
 
-// Seed demo users so the user can immediately test without needing two machines
-function seedDemoUsers() {
-  if (users.size > 0) return;
-
-  const demoUsers = [
-    {
-      username: 'alice',
-      email: 'alice@undermine.network',
-      password: 'password123',
-      // Pre-set public key for demo
-      publicKey: '3b6b27bcceb6a42d62a3a8d02a6f0d73653215771de243a63ac048a18b59da29',
-    },
-    {
-      username: 'bob',
-      email: 'bob@undermine.network',
-      password: 'password123',
-      publicKey: '2fe57da347cd62431528daac5fbb290730fff684afc4cfc2ed90995f58cb3b74',
-    },
-    {
-      username: 'charlie',
-      email: 'charlie@undermine.network',
-      password: 'password123',
-      publicKey: '68925700874e47cf782803b7ccf6186847bc2a6886e3981ac5550a6e3557e05e',
-    },
-  ];
-
-  for (const u of demoUsers) {
-    const userId = generateId();
-    const userRec: UserRecord = {
-      id: userId,
-      username: u.username,
-      email: u.email,
-      passwordHash: hashPassword(u.password),
-      publicKey: u.publicKey,
-      createdAt: new Date(),
-    };
-    users.set(u.username.toLowerCase(), userRec);
-    usersById.set(userId, userRec);
-  }
-}
-
-seedDemoUsers();
+// Note: No demo users are seeded. Users must register via the client.
 
 const app = express();
 app.use(cors());

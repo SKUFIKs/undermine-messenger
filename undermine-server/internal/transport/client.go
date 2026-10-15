@@ -33,7 +33,7 @@ func NewClient(userID [16]byte, conn *websocket.Conn, hub *Hub) *Client {
 
 func (c *Client) ReadPump() {
 	defer func() {
-		c.hub.Unregister(c.userID)
+		c.hub.Unregister(c.userID, c)
 		c.conn.Close()
 	}()
 

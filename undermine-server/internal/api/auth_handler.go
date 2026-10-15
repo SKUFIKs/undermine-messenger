@@ -152,6 +152,31 @@ func (h *AuthHandler) HandleSearchUser(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func (h *AuthHandler) HandleDirectory(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	entries, err := h.authService.Directory()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	list := make([]UserSearchResponse, 0, len(entries))
+	for _, e := range entries {
+		list = append(list, UserSearchResponse{
+			UserID:    hex.EncodeToString(e.UserID[:]),
+			Username:  e.Username,
+			PublicKey: hex.EncodeToString(e.PublicKey[:]),
+		})
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(list)
+}
+
 func (h *AuthHandler) HandleUpdateKey(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)

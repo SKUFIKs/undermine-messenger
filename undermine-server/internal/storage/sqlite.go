@@ -60,6 +60,27 @@ func (s *SQLiteStorage) initSchema() error {
 		payload BLOB NOT NULL,
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 	);
+
+	CREATE TABLE IF NOT EXISTS groups (
+		id BLOB PRIMARY KEY,
+		name TEXT NOT NULL,
+		owner_id BLOB NOT NULL,
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+	);
+
+	CREATE TABLE IF NOT EXISTS group_members (
+		group_id BLOB NOT NULL,
+		user_id BLOB NOT NULL,
+		joined_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		PRIMARY KEY (group_id, user_id)
+	);
+
+	CREATE TABLE IF NOT EXISTS group_keys (
+		group_id BLOB NOT NULL,
+		user_id BLOB NOT NULL,
+		encrypted_key BLOB NOT NULL,
+		PRIMARY KEY (group_id, user_id)
+	);
 	`
 	_, err := s.db.Exec(schema)
 	return err
